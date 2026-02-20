@@ -20,7 +20,6 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
-
     // Login check
     public String login(User loginRequest) {
 
