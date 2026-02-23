@@ -15,7 +15,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // REGISTER
+    // Register new user
     public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
@@ -33,10 +33,7 @@ public class UserService {
             return "User not found";
         }
 
-        boolean passwordMatch = passwordEncoder.matches(
-                loginRequest.getPassword(),
-                user.getPassword()
-        );
+        boolean passwordMatch = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword() );
 
         if (passwordMatch) {
             return "Login successful";

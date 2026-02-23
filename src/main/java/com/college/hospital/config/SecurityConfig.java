@@ -16,8 +16,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                        .anyRequest().permitAll()   // temporarily allow everything
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
