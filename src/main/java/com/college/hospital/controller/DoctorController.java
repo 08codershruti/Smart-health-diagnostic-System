@@ -5,25 +5,44 @@ import com.college.hospital.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/doctors")
 public class DoctorController {
     @Autowired
     private DoctorService doctorService;
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public Doctor addDoctor(@RequestBody Doctor doctor)
     {
         return doctorService.addDoctor(doctor);
     }
+    @PreAuthorize("hasAnyRole('ADMIN','PATIENT','DOCTOR')")
     @GetMapping
     public List<Doctor> getAllDoctors() {
 
         return doctorService.getAllDoctors();
     }
+    @PreAuthorize("hasRole('DOCTOR')")
     @PutMapping("/update/{id}")
     public Doctor updateAvailability(@PathVariable Long id,
                                      @RequestParam String availableTime) {
         return doctorService.updateAvailability(id, availableTime);
+    }
+
+    @GetMapping("/{id}")
+    public Doctor getDoctorById(@PathVariable Long id) {
+        return doctorService.getDoctorById(id);
+    }
+
+    @GetMapping("/specialization/{type}")
+    public List<Doctor> getDoctorsBySpecialization(@PathVariable String type) {
+        return doctorService.getDoctorsBySpecialization(type);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteDoctor(@PathVariable Long id) {
+        return doctorService.deleteDoctor(id);
     }
 }

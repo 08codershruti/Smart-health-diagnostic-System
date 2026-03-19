@@ -34,4 +34,18 @@ public class DoctorService {
 
         return null;
     }
+
+    public Doctor getDoctorById(Long id) {
+        return doctorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+    }
+
+    public List<Doctor> getDoctorsBySpecialization(String specialization) {
+        return doctorRepository.findBySpecialization(specialization);
+    }
+
+    public String deleteDoctor(Long id) {
+        doctorRepository.deleteById(id);
+        return "Doctor deleted successfully";
+    }
 }
