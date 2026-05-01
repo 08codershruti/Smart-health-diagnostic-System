@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -18,10 +20,11 @@ public class UserController {
         return userService.registerUser(user);
     }
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    public Map<String, String> login(@RequestBody User user) {
 
         return userService.login(user);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/approve/{id}")
     public User approveDoctor(@PathVariable Long id) {
