@@ -1,5 +1,6 @@
 package com.college.hospital.controller;
 
+import com.college.hospital.dto.LoginRequest;
 import com.college.hospital.entity.User;
 import com.college.hospital.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,10 @@ public class UserController {
         return userService.registerUser(user);
     }
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody User user) {
+    public Map<String, String> login(
+            @RequestBody LoginRequest request) {
 
-        return userService.login(user);
+        return userService.login(request);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

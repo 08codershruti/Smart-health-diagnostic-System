@@ -3,6 +3,7 @@ package com.college.hospital.controller;
 import com.college.hospital.entity.Appointment;
 import com.college.hospital.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -13,18 +14,20 @@ public class AppointmentController {
     @Autowired
     private AppointmentService appointmentService;
 
+    @PreAuthorize("hasRole('PATIENT')")
     @PostMapping("/book")
     public Appointment bookAppointment(@RequestBody Appointment appointment) {
 
         return appointmentService.bookAppointment(appointment);
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Appointment> getAppointmentsByUser(@PathVariable Long userId) {
 
-        return appointmentService.getAppointmentsByUser(userId);
+    @GetMapping("/patient/{patientId}")
+    public List<Appointment> getAppointmentsByPatient(
+            @PathVariable Long patientId){
+
+        return appointmentService.getAppointmentsByPatient(patientId);
     }
-
     @GetMapping("/doctor/{doctorId}")
     public List<Appointment> getAppointmentsByDoctor(@PathVariable Long doctorId) {
 
@@ -39,5 +42,11 @@ public class AppointmentController {
     @GetMapping
     public List<Appointment> getAllAppointments() {
         return appointmentService.getAllAppointments();
+    }
+    @GetMapping("/history/{patientId}")
+    public List<Appointment> getAppointmentHistory(
+            @PathVariable Long patientId) {
+
+        return appointmentService.getAppointmentHistory(patientId);
     }
 }

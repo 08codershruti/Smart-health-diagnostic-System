@@ -1,6 +1,8 @@
 package com.college.hospital.service;
 
+import com.college.hospital.entity.Appointment;
 import com.college.hospital.entity.Doctor;
+import com.college.hospital.repository.AppointmentRepository;
 import com.college.hospital.repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ import java.util.List;
 public class DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
     public Doctor addDoctor(Doctor doctor)
     {
         return doctorRepository.save(doctor);
@@ -47,5 +51,16 @@ public class DoctorService {
     public String deleteDoctor(Long id) {
         doctorRepository.deleteById(id);
         return "Doctor deleted successfully";
+    }
+    public String completeAppointment(Long id) {
+
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        appointment.setStatus("COMPLETED");
+
+        appointmentRepository.save(appointment);
+
+        return "Appointment marked as completed";
     }
 }

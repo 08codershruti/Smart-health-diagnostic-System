@@ -1,6 +1,7 @@
 package com.college.hospital.service;
 
 import com.college.hospital.config.JwtUtil;
+import com.college.hospital.dto.LoginRequest;
 import com.college.hospital.entity.User;
 import com.college.hospital.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,17 +88,22 @@ public class UserService {
 //        return "Invalid password";
 //    }
 
+    public Map<String, String> login(LoginRequest request) {
 
-    public Map<String, String> login(User user) {
-
-        User dbUser = userRepository.findByEmail(user.getEmail())
+        User dbUser = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                dbUser.getPassword())) {
+
             throw new RuntimeException("Invalid password");
         }
 
-        String token = jwtUtil.generateToken(dbUser.getEmail(), dbUser.getRole());
+        String token = jwtUtil.generateToken(
+                dbUser.getEmail(),
+                dbUser.getRole()
+        );
 
         return Map.of(
                 "token", token,

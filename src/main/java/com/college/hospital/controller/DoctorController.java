@@ -1,6 +1,8 @@
 package com.college.hospital.controller;
 
 import com.college.hospital.entity.Doctor;
+import com.college.hospital.repository.AppointmentRepository;
+import com.college.hospital.service.AppointmentService;
 import com.college.hospital.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public class DoctorController {
     @Autowired
     private DoctorService doctorService;
+    @Autowired
+    private AppointmentService appointmentService;
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public Doctor addDoctor(@RequestBody Doctor doctor)
@@ -44,5 +48,10 @@ public class DoctorController {
     @DeleteMapping("/delete/{id}")
     public String deleteDoctor(@PathVariable Long id) {
         return doctorService.deleteDoctor(id);
+    }
+    @PutMapping("/complete/{id}")
+    public String completeAppointment(@PathVariable Long id) {
+
+        return appointmentService.completeAppointment(id);
     }
 }

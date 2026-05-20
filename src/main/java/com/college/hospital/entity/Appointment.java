@@ -12,13 +12,18 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
-    private Long doctorId;
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
 
     private String appointmentDate;
 
     private String appointmentTime;
 
     private String status;
+    private String tokenNumber;
 }

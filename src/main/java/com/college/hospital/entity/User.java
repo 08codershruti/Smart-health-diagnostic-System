@@ -1,5 +1,6 @@
 package com.college.hospital.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,6 +17,7 @@ public class User {
     private Long id;
     private String name;
     private String email;
+    @JsonIgnore
     private String password;
     private String role;
     private String phone;
