@@ -28,20 +28,30 @@ public class DoctorService {
         return doctorRepository.findAll();
     }
 
-    public Doctor updateAvailability(Long id, String availableTime) {
-        Doctor doctor = doctorRepository.findById(id).orElse(null);
+    public Doctor updateAvailability(
+            Long userId,
+            String availableTime) {
 
-        if (doctor != null) {
-            doctor.setAvailableTime(availableTime);
-            return doctorRepository.save(doctor);
-        }
+        Doctor doctor = doctorRepository
+                .findByUserId(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("Doctor not found"));
 
-        return null;
+        doctor.setAvailableTime(availableTime);
+
+        return doctorRepository.save(doctor);
     }
 
     public Doctor getDoctorById(Long id) {
         return doctorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
+    }
+    public Doctor getDoctorByUserId(Long userId){
+
+        return doctorRepository
+                .findByUserId(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("Doctor not found"));
     }
 
     public List<Doctor> getDoctorsBySpecialization(String specialization) {

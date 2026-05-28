@@ -30,6 +30,10 @@ public class JwtFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+        if (request.getServletPath().equals("/api/users/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String authHeader = request.getHeader("Authorization");
 
@@ -56,6 +60,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         .setAuthentication(authentication);
             }
         }
+
 
         filterChain.doFilter(request, response);
     }

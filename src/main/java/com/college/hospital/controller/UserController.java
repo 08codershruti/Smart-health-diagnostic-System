@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,7 +22,7 @@ public class UserController {
         return userService.registerUser(user);
     }
     @PostMapping("/login")
-    public Map<String, String> login(
+    public Map<String, Object> login(
             @RequestBody LoginRequest request) {
 
         return userService.login(request);
@@ -31,5 +32,32 @@ public class UserController {
     @PutMapping("/approve/{id}")
     public User approveDoctor(@PathVariable Long id) {
         return userService.approveDoctor(id);
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public List<User> getAllUsers(){
+
+        return userService.getAllUsers();
+    }
+    @PostMapping("/send-otp")
+    public String sendOtp(
+            @RequestBody Map<String,String> request){
+
+        return userService.sendOtp(
+                request.get("email")
+        );
+    }
+    @PostMapping("/reset-password")
+    public String resetPassword(
+            @RequestBody Map<String,String> request){
+
+        return userService.resetPassword(
+
+                request.get("email"),
+
+                request.get("otp"),
+
+                request.get("newPassword")
+        );
     }
 }

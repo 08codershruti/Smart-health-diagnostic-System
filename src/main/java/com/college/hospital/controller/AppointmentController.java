@@ -10,15 +10,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
-
     @Autowired
     private AppointmentService appointmentService;
 
     @PreAuthorize("hasRole('PATIENT')")
     @PostMapping("/book")
-    public Appointment bookAppointment(@RequestBody Appointment appointment) {
+    public Appointment bookAppointment(@RequestBody Appointment request) {
 
-        return appointmentService.bookAppointment(appointment);
+        return appointmentService.bookAppointment(request);
     }
 
 

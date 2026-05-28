@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -88,10 +90,12 @@ public class UserService {
 //        return "Invalid password";
 //    }
 
-    public Map<String, String> login(LoginRequest request) {
+    public Map<String, Object> login(LoginRequest request){
 
-        User dbUser = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User dbUser = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
 
         if (!passwordEncoder.matches(
                 request.getPassword(),
@@ -99,15 +103,23 @@ public class UserService {
 
             throw new RuntimeException("Invalid password");
         }
+        if (dbUser.getRole().equals("ROLE_DOCTOR") &&
+                !dbUser.getApprovalStatus().equals("APPROVED")) {
+
+            throw new RuntimeException(
+                    "Doctor not approved by admin yet");
+        }
 
         String token = jwtUtil.generateToken(
                 dbUser.getEmail(),
-                dbUser.getRole()
-        );
+                dbUser.getRole());
 
         return Map.of(
+
                 "token", token,
-                "role", dbUser.getRole()
+                "role", dbUser.getRole(),
+                "userId", dbUser.getId()
+
         );
     }
 
@@ -121,5 +133,73 @@ public class UserService {
         }
 
         return null;
+    }
+    public List<User> getAllUsers(){
+
+        return userRepository.findAll();
+    }
+
+    private Map<String, String> otpStorage = new HashMap<>();
+    public String sendOtp(String email){
+
+        try{
+
+            User user =
+                    userRepository.findByEmail(email)
+                            .orElseThrow(() ->
+                                    new RuntimeException("Email not found"));
+
+            String otp =
+                    String.valueOf(
+                            (int)(Math.random()*900000)+100000
+                    );
+
+            otpStorage.put(email, otp);
+
+            System.out.println("Generated OTP: " + otp);
+
+            emailService.sendOtpEmail(email, otp);
+
+            System.out.println("EMAIL SENT SUCCESSFULLY");
+
+            return "OTP Sent Successfully";
+
+        }
+
+        catch(Exception e){
+
+            e.printStackTrace();
+
+            return "ERROR: " + e.getMessage();
+        }
+    }
+    public String resetPassword(
+            String email,
+            String otp,
+            String newPassword){
+
+        String storedOtp =
+                otpStorage.get(email);
+
+        if(storedOtp == null ||
+                !storedOtp.equals(otp)){
+
+            throw new RuntimeException("Invalid OTP");
+        }
+
+        User user =
+                userRepository.findByEmail(email)
+                        .orElseThrow(() ->
+                                new RuntimeException("User not found"));
+
+        user.setPassword(
+                passwordEncoder.encode(newPassword)
+        );
+
+        userRepository.save(user);
+
+        otpStorage.remove(email);
+
+        return "Password Updated Successfully";
     }
 }

@@ -21,22 +21,27 @@ public class AppointmentService {
     private DoctorRepository doctorRepository;
 
     public Appointment bookAppointment(Appointment appointment) {
-        Long patientId=appointment.getPatient().getId();
-        Long doctorId=appointment.getDoctor().getId();
 
-        Patient patient =patientRepository.findById(patientId).orElseThrow(() -> new RuntimeException("patient not found"));
-        Doctor doctor =doctorRepository.findById(doctorId).orElseThrow(() -> new RuntimeException("Doctor not found"));
+        Long patientId = appointment.getPatient().getId();
+        Long doctorId = appointment.getDoctor().getId();
+
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
         appointment.setPatient(patient);
         appointment.setDoctor(doctor);
-        String token = generateToken(
-                appointment.getAppointmentDate()
-        );
 
+        String token = generateToken(appointment.getAppointmentDate());
         appointment.setTokenNumber(token);
+
         appointment.setStatus("BOOKED");
 
         return appointmentRepository.save(appointment);
     }
+
 
     public List<Appointment> getAppointmentsByDoctor(Long doctorId) {
 

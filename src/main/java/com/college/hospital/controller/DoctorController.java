@@ -34,10 +34,17 @@ public class DoctorController {
                                      @RequestParam String availableTime) {
         return doctorService.updateAvailability(id, availableTime);
     }
-
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public Doctor getDoctorById(@PathVariable Long id) {
         return doctorService.getDoctorById(id);
+    }
+
+    @PreAuthorize("hasRole('DOCTOR')")
+    @GetMapping("/user/{userId}")
+    public Doctor getDoctorByUserId(
+            @PathVariable Long userId){
+        return doctorService.getDoctorByUserId(userId);
+
     }
 
     @GetMapping("/specialization/{type}")

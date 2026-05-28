@@ -26,4 +26,7 @@ public class Doctor {
     private String phone;
 
     private double consultationFee;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
